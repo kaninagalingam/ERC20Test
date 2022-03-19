@@ -259,8 +259,8 @@ function setTotalSupply(address owner) private   {
 
      
 
-        uint256 fromBalance = _balances[from];
-        require(fromBalance >= amount, "ERC20: transfer amount exceeds balance");
+        
+        require(_balances[from] >= amount, "ERC20: transfer amount exceeds balance");
         _balances[from] -= amount;
         _balances[to] += amount;
 

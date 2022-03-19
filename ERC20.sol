@@ -37,6 +37,8 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
     mapping(address => uint256) private _balances;
 
     mapping(address => mapping(address => uint256)) private _allowances;
+    
+
 
     uint256 private _totalSupply;
     address private _owner;
@@ -56,9 +58,8 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
     constructor(string memory name_, string memory symbol_, uint256 amount) {
         _name = name_;
         _symbol = symbol_;
-        _totalSupply = amount;
          _owner = msg.sender;
-         setTotalSupply(_owner);
+         _mint(msg.sender, amount);
      }
 
 
@@ -95,7 +96,7 @@ function setTotalSupply(address owner) private   {
      * {IERC20-balanceOf} and {IERC20-transfer}.
      */
     function decimals() public view virtual override returns (uint8) {
-        return 18;
+        return 2;
     }
 
     /**
@@ -171,7 +172,7 @@ function setTotalSupply(address owner) private   {
         address to,
         uint256 amount
     ) public virtual  returns (bool) {
-        require((msg.sender==_owner || from==address(this)),"ERC20: Access Not Allowed" );
+        _spendAllowance(from, to, amount);
         _transfer(from, to, amount);
         return true;
     }
@@ -250,18 +251,16 @@ function setTotalSupply(address owner) private   {
         require(from != address(0), "ERC20: transfer from the zero address");
         require(to != address(0), "ERC20: transfer to the zero address");
 
-        _beforeTokenTransfer(from, to, amount);
+     
 
         uint256 fromBalance = balanceOf(from);
         require(fromBalance >= amount, "ERC20: transfer amount exceeds balance");
-        unchecked {
-            _balances[from] = fromBalance - amount;
-        }
+        _balances[from] -= amount;
         _balances[to] += amount;
 
         emit Transfer(from, to, amount);
 
-        _afterTokenTransfer(from, to, amount);
+     
     }
 
     /** @dev Creates `amount` tokens and assigns them to `account`, increasing
@@ -276,17 +275,17 @@ function setTotalSupply(address owner) private   {
     function _mint(address account, uint256 amount) internal virtual {
         require(account != address(0), "ERC20: mint to the zero address");
 
-        _beforeTokenTransfer(address(0), account, amount);
+       
 
         _totalSupply += amount;
         _balances[account] += amount;
         emit Transfer(address(0), account, amount);
 
-    _afterTokenTransfer(address(0), account, amount);
+    
     }
 
     function mint(address account, uint256 amount) external   {
-        require(msg.sender==_owner,"ERC20 : Access To OnlyOwner");
+        require(_owner==msg.sender,"ERC20 : Access To OnlyOwner");
         require(account != address(0), "ERC20: mint to the zero address");
             _mint(account, amount);
         
@@ -360,11 +359,10 @@ function setTotalSupply(address owner) private   {
         uint256 amount
     ) internal virtual {
         uint256 currentAllowance = allowance(owner, spender);
-        if (currentAllowance != type(uint256).max) {
+        if (currentAllowance != _totalSupply) {
             require(currentAllowance >= amount, "ERC20: insufficient allowance");
-            unchecked {
                 _approve(owner, spender, currentAllowance - amount);
-            }
+
         }
     }
 
@@ -409,3 +407,4 @@ function setTotalSupply(address owner) private   {
         uint256 amount
     ) internal virtual {}
 }
+

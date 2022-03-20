@@ -198,7 +198,7 @@ function setTotalSupply(address owner) private   {
      * - `spender` cannot be the zero address.
      */
     function increaseAllowance(address spender, uint256 addedValue) public virtual returns (bool) {
-        address owner = _msgSender();
+        address owner = msg.sender;
         _approve(owner, spender, allowance(owner, spender) + addedValue);
         return true;
     }
@@ -218,7 +218,7 @@ function setTotalSupply(address owner) private   {
      * `subtractedValue`.
      */
     function decreaseAllowance(address spender, uint256 subtractedValue) public virtual returns (bool) {
-        address owner = _msgSender();
+        address owner = msg.sender;
         uint256 currentAllowance = allowance(owner, spender);
         require(currentAllowance >= subtractedValue, "ERC20: decreased allowance below zero");
         unchecked {
@@ -232,7 +232,7 @@ function setTotalSupply(address owner) private   {
 
     function msgSender() public view returns (address) {
    
-        return _msgSender();
+        return msg.sender;
     }
 
     /**

